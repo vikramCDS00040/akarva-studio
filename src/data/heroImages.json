@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "url": null,
+    "order": 1,
+    "published": true
+  },
+  {
+    "id": 2,
+    "url": null,
+    "order": 2,
+    "published": true
+  },
+  {
+    "id": 3,
+    "url": null,
+    "order": 1,
+    "published": true
+  },
+  {
+    "id": 4,
+    "url": null,
+    "order": 2,
+    "published": true
+  },
+  {
+    "id": 5,
+    "url": null,
+    "order": 2,
+    "published": true
+  },
+  {
+    "id": 6,
+    "url": null,
+    "order": 2,
+    "published": true
+  }
+]
