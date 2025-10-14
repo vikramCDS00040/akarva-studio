@@ -243,7 +243,7 @@ const Contact = () => {
             Ready to Elevate Your Jewelry Designs?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Let's bring your vision to life with stunning 3D renders
+            Let&apos;s bring your vision to life with stunning 3D renders
           </p>
         </div>
 

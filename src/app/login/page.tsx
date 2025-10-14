@@ -201,7 +201,7 @@ const Login = () => {
             </div>
 
             <p className="text-center text-sm text-muted-foreground mt-6 opacity-50 cursor-not-allowed select-none">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}

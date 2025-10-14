@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
@@ -12,12 +13,12 @@ import Process from "@/components/Process";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
-const Index = () => {
+const IndexContent = () => {
   const searchParams = useSearchParams();
   const heroParam = searchParams.get("hero");
 
   return (
-    <div className="min-h-screen">
+    <>
       <Navigation />
       {heroParam === "image" ? <HeroImage /> : <Hero />}
       <Stats />
@@ -27,6 +28,16 @@ const Index = () => {
       <Process />
       <Contact />
       <Footer />
+    </>
+  );
+};
+
+const Index = () => {
+  return (
+    <div className="min-h-screen">
+      <Suspense fallback={<div>Loading...</div>}>
+        <IndexContent />
+      </Suspense>
     </div>
   );
 };
