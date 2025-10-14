@@ -70,13 +70,13 @@ export async function middleware(req: NextRequest) {
   }
 
   // Redirect logged-in users away from /login (or root)
-  if ((pathname === "/" || pathname === "/login") && isValidToken) {
+  if (pathname === "/login" && isValidToken) {
     return NextResponse.redirect(new URL("/admin", req.url));
   }
 
   // Protect /admin routes
   if (pathname.startsWith("/admin") && !isValidToken) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();

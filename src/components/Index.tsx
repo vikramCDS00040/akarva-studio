@@ -32,10 +32,22 @@ const IndexContent = () => {
   );
 };
 
+const Loading = () => (
+  <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex flex-col items-center">
+      {/* Gold Spinner */}
+      <div className="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      {/* Loading text */}
+      <p className="mt-4 text-yellow-400 text-lg font-semibold animate-pulse">
+        Loading...
+      </p>
+    </div>
+  </div>
+);
 const Index = () => {
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <IndexContent />
       </Suspense>
     </div>

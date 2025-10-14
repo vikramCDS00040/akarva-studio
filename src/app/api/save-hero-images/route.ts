@@ -34,8 +34,10 @@ export async function POST(req: NextRequest) {
     fs.writeFileSync(jsonPath, metadataStr);
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
-    return NextResponse.json({ success: false, message: "Save failed" });
+    // Pass actual error message
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ success: false, message });
   }
 }
