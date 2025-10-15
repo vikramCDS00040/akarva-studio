@@ -12,34 +12,9 @@ export async function POST(req: NextRequest) {
     fs.writeFileSync(jsonPath, JSON.stringify(images, null, 2));
     
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    return NextResponse.json({ success: false, message: err.message });
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ success: false, message });
   }
 }
-
-// For AWS S3 deployment, replace the above with:
-/*
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
-const s3Client = new S3Client({ region: process.env.AWS_REGION });
-
-export async function POST(req: NextRequest) {
-  try {
-    const images = await req.json();
-    
-    const command = new PutObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME,
-      Key: "gallery-images.json",
-      Body: JSON.stringify(images, null, 2),
-      ContentType: "application/json"
-    });
-    
-    await s3Client.send(command);
-    
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message });
-  }
-}
-*/
