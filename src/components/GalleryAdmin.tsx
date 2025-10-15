@@ -118,7 +118,7 @@ export default function GalleryAdmin() {
       } else {
         toast.error("Failed to save gallery");
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Error saving gallery");
     }
   };
@@ -143,7 +143,7 @@ export default function GalleryAdmin() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 p-10">
-        {images.map((image, index) => (
+        {images.map((image, _index) => (
           <Card
             key={image.id}
             draggable

@@ -48,7 +48,7 @@ const Login = () => {
           description: data?.error || "Login failed.",
         });
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Network error");
     } finally {
       setIsLoading(false);

@@ -44,7 +44,7 @@ export default function GalleryAdminS3() {
         }));
         setImages(defaultImages);
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to load from S3");
     } finally {
       setLoading(false);
@@ -130,7 +130,7 @@ export default function GalleryAdminS3() {
       } else {
         toast.error("Failed to save to S3");
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Error saving to S3");
     } finally {
       setLoading(false);
@@ -166,7 +166,7 @@ export default function GalleryAdminS3() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 p-10">
-        {images.map((image, index) => (
+        {images.map((image, _index) => (
           <Card
             key={image.id}
             draggable

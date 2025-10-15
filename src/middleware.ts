@@ -64,7 +64,7 @@ export async function middleware(req: NextRequest) {
     try {
       await jwtVerify(token, encoder.encode(JWT_SECRET));
       isValidToken = true;
-    } catch (err) {
+    } catch (_err) {
       isValidToken = false;
     }
   }
