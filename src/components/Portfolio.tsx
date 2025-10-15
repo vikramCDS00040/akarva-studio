@@ -1,184 +1,100 @@
-// import Image from "next/image";
-// import { useEffect, useState } from "react";
-
-// // Default assets fallback
-// import portfolio1 from "@/assets/akarva-1.jpg";
-// import portfolio2 from "@/assets/akarva-7.jpg";
-// import portfolio3 from "@/assets/akarva-3.jpg";
-// import portfolio4 from "@/assets/akarva-4.jpg";
-// import portfolio5 from "@/assets/akarva-5.jpg";
-// import portfolio6 from "@/assets/akarva-6.jpg";
-
-// interface ImageSlot {
-//   id: number;
-//   url: string | null;
-//   title?: string;
-//   order?: number;
-// }
-
-// const defaultPortfolio: ImageSlot[] = [
-//   { id: 1, url: portfolio1.src, order: 1, title: "Sample Ruby Necklace" },
-//   { id: 2, url: portfolio2.src, order: 2, title: "Sample Diamond Earrings" },
-//   { id: 3, url: portfolio6.src, order: 3, title: "Sample Engagement Ring" },
-//   { id: 4, url: portfolio4.src, order: 4, title: "Sample Pearl Necklace" },
-//   { id: 5, url: portfolio5.src, order: 5, title: "Sample Sapphire Bracelet" },
-//   { id: 6, url: portfolio3.src, order: 6, title: "Sample Emerald Bracelet" },
-// ];
-
-// const Portfolio = () => {
-//   const [portfolioItems, setPortfolioItems] = useState<ImageSlot[]>([]);
-
-//   useEffect(() => {
-//     const fetchHeroImages = async () => {
-//       try {
-//         const res = await fetch("/hero-images.json", { cache: "no-store" });
-//         if (!res.ok) throw new Error("Failed to fetch hero images JSON");
-
-//         const data: ImageSlot[] = await res.json();
-//         const sorted = data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-//         setPortfolioItems(sorted);
-//       } catch (err) {
-//         console.warn("Falling back to default portfolio:", err);
-//         setPortfolioItems(defaultPortfolio);
-//       }
-//     };
-
-//     fetchHeroImages();
-//   }, []);
-
-//   return (
-//     <section id="portfolio" className="py-24 bg-secondary/20">
-//       <div className="container mx-auto px-6">
-//         <div className="text-center mb-16">
-//           <h2 className="text-4xl md:text-6xl font-serif font-bold text-gradient-gold mb-4">
-//             Our Work Speaks
-//           </h2>
-//           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-//             Exceptional craftsmanship in every detail
-//           </p>
-//         </div>
-
-//         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {portfolioItems.map((item) =>
-//             item.url ? (
-//               <div
-//                 key={item.id}
-//                 className="group relative overflow-hidden rounded-lg aspect-square cursor-pointer hover-lift"
-//               >
-//                 <Image
-//                   src={item.url}
-//                   alt={item.title ?? "Portfolio item"}
-//                   fill
-//                   className="object-cover transition-transform duration-500 group-hover:scale-110"
-//                 />
-//                 <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-//                   <div className="absolute bottom-0 left-0 right-0 p-6">
-//                     <h3 className="text-xl font-serif font-semibold text-foreground">
-//                       {item.title}
-//                     </h3>
-//                   </div>
-//                 </div>
-//               </div>
-//             ) : null
-//           )}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Portfolio;
-
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-// Default assets fallback
-import portfolio1 from "@/assets/akarva-1.jpg";
-import portfolio2 from "@/assets/akarva-7.jpg";
-import portfolio3 from "@/assets/akarva-3.jpg";
-import portfolio4 from "@/assets/akarva-4.jpg";
-import portfolio5 from "@/assets/akarva-5.jpg";
-import portfolio6 from "@/assets/akarva-6.jpg";
-
-interface ImageSlot {
+interface GalleryImage {
   id: number;
-  url: string | null;
-  title?: string;
-  order?: number;
-  published?: boolean; // <-- add this field
+  base64: string;
+  order: number;
+  published: boolean;
+  title: string;
 }
 
-const defaultPortfolio: ImageSlot[] = [
-  { id: 1, url: portfolio1.src, order: 1, title: "Sample Ruby Necklace" },
-  { id: 2, url: portfolio2.src, order: 2, title: "Sample Diamond Earrings" },
-  { id: 3, url: portfolio6.src, order: 3, title: "Sample Engagement Ring" },
-  { id: 4, url: portfolio4.src, order: 4, title: "Sample Pearl Necklace" },
-  { id: 5, url: portfolio5.src, order: 5, title: "Sample Sapphire Bracelet" },
-  { id: 6, url: portfolio3.src, order: 6, title: "Sample Emerald Bracelet" },
-];
-
 const Portfolio = () => {
-  const [portfolioItems, setPortfolioItems] = useState<ImageSlot[]>([]);
+  const [portfolioItems, setPortfolioItems] = useState<GalleryImage[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchGalleryImages = async () => {
+    try {
+      // Add timestamp and random number to prevent caching
+      const cacheBuster = `t=${Date.now()}&r=${Math.random()}`;
+      const res = await fetch(`/gallery-images.json?${cacheBuster}`, { 
+        cache: "no-store",
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      
+      if (!res.ok) throw new Error("Failed to fetch gallery images");
+
+      const data: GalleryImage[] = await res.json();
+      
+      // Filter items with base64 content and sort by order (show all for now)
+      const visibleItems = data
+        .filter(item => item.base64)
+        .sort((a, b) => a.order - b.order);
+
+      setPortfolioItems(visibleItems);
+    } catch (err) {
+      console.warn("Failed to load gallery images:", err);
+      setPortfolioItems([]);
+    }
+  };
 
   useEffect(() => {
-    const fetchHeroImages = async () => {
-      try {
-        const res = await fetch("/hero-images.json", { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to fetch hero images JSON");
+    fetchGalleryImages();
+  }, [refreshKey]);
 
-        const data: ImageSlot[] = await res.json();
-
-        // ✅ Filter only published items, then sort
-        const visibleItems = data
-          .filter((item) => item.published) // <-- only published = true
-          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-        setPortfolioItems(visibleItems);
-      } catch (err) {
-        console.warn("Falling back to default portfolio:", err);
-        setPortfolioItems(defaultPortfolio);
-      }
-    };
-
-    fetchHeroImages();
-  }, []);
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
     <section id="portfolio" className="py-24 bg-secondary/20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-serif font-bold text-gradient-gold mb-4">
-            Our Work Speaks
-          </h2>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gradient-gold">
+              Our Work Speaks
+            </h2>
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              className="border-primary text-primary hover:bg-primary/10"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Exceptional craftsmanship in every detail
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {portfolioItems.map(
-            (item) =>
-              item.url && (
-                <div
-                  key={item.id}
-                  className="group relative overflow-hidden rounded-lg aspect-square cursor-pointer hover-lift"
-                >
-                  <Image
-                    src={item.url}
-                    alt={item.title ?? "Portfolio item"}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h3 className="text-xl font-serif font-semibold text-foreground">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </div>
+          {portfolioItems.map((item) => (
+            <div
+              key={item.id}
+              className="group relative overflow-hidden rounded-lg aspect-square cursor-pointer hover-lift"
+            >
+              <Image
+                src={item.base64}
+                alt={item.title || `Portfolio item ${item.id}`}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="text-xl font-serif font-semibold text-foreground">
+                    {item.title || `Image ${item.id}`}
+                  </h3>
                 </div>
-              )
-          )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

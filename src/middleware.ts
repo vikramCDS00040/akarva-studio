@@ -75,7 +75,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Protect /admin routes
-  if (pathname.startsWith("/admin") && !isValidToken) {
+  if ((pathname.startsWith("/admin") || pathname.startsWith("/gallery-admin") || pathname.startsWith("/gallery-s3")) && !isValidToken) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -83,5 +83,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/admin/:path*"], // protect login redirect + admin routes
+  matcher: ["/", "/login", "/admin/:path*", "/gallery-admin/:path*", "/gallery-s3/:path*"], // protect login redirect + admin routes
 };
